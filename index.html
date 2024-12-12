@@ -178,6 +178,22 @@
   </div>
 </section>
 <!-- End paper abstract -->
+<section class="section" id="Graphical Abstract"></section>
+<div class="container is-max-desktop">
+  <h4 class="subtitle has-text-centered" style="font-size:1.1rem;font-weight: normal;">
+    <img src="static/images/graphical_abstract.png" alt="Discrete Guidance" style="width:720px;margin-top: 0px;">
+    <br>
+    <em>
+      <b>Adapting guidance to discrete diffusion.</b>
+      (Left) Models output a factorized discrete distribution for each denoised token.
+      With our guidance mechanisms, we adjust these probabilities according to a guidance model -- either a conditional diffusion model in classifier-free guidance or a separately trained classifier for classifier-based guidance.
+      (Right) Relative to autoregressive models, which make local predictions one token at a time, discrete diffusion models denoise the entire sequence at every iteration, allowing for more guidable outputs.
+    </em>
+  </h4>
+  <br>
+</div>
+</section>
+
 
 <section class="section" id="Discrete Diffusion Models">
   <div class="container is-max-desktop">    
@@ -243,18 +259,18 @@
         where \(Z^{(\ell)} = \sum_{\mathbf{z}'_{s}}p_\theta(\mathbf{z}'_{s} \mid \mathbf{z}_t^{(1:L)}, y)^\gamma p_\theta(\mathbf{z}'_s\mid\mathbf{z}_t^{(1:L)})^{(1-\gamma)}\) is the per-token partition function.
       <br><br>
         We dub this guidance mechanism as <b>D-CFG</b> for <b>D</b>iscerete <b>C</b>lassifier-<b>F</b>ree <b>G</b>uidance.
-      <br><br><br><br>
+      <br><br>
       <h4 class="subtitle has-text-centered" style="font-size:1.1rem;font-weight: normal;">
-        <img src="static/images/graphical_abstract.png" alt="Discrete Guidance" style="width:720px">
+        <img src="static/images/discrete_guidance.png" alt="Discrete Guidance" style="width:720px;margin-top: 0px;">
         <br>
         <em>
-          Adapting guidance to discrete diffusion.
-          (Left) Models output a factorized discrete distribution for each denoised token.
-          With our guidance mechanisms, we adjust these probabilities according to a guidance model -- either a conditional diffusion model in classifier-free guidance or a separately trained classifier for classifier-based guidance.
-          (Right) Relative to autoregressive models, which make local predictions one token at a time, discrete diffusion models denoise the entire sequence at every iteration, allowing for more guidable outputs.
+          The temperature \(\gamma\) controls the strength of guidance, i.e., how strongly we 'focus' on the conditional distribution.
+          (Left) <b>Discrete Classifier-Free Guidance</b>&nbsp;&nbsp;We downweigh the output of an unconditional diffusion model and upweigh the output of conditional diffusion model (both of which factorize independently across a sequence) to produce a guided distribution per token.
+          (Right) <b>Discrete Classifier-Based Guidance</b>&nbsp;&nbsp;We adjust the output of the unconditional model by the probability assigned by a classifier to sequences with a single token change.
+          Our assumption that the guided distribution factorizes independently across tokens allows us to tractably compute this distribution.
         </em>
       </h4>
-      <br>
+    
       <h3 class="subtitle" style="font-size:1.6rem;"><em>Discrete Classifier-Based Guidance</em></h3>
         Extending classifier-based guidance to diffusion models in a similar manner to above is difficult because the guiding classifier need not factorize the same as the diffusion denoising network, which would imply that the classifier needs to be evaluated on exponentially many sequence combinations.
         We resolve this using factorization assumptions on the decoding model and a Taylor expansion trick.
@@ -652,7 +668,7 @@
       <!--TODO: Update citation -->
       <pre><code>
         @article{schiff2024discreteguidance,
-          title={Controllable Discrete Diffusion Language Models},
+          title={Simple Guidance Mechanisms for Discrete Diffusion Models},          
           author={Schiff, Yair and Sahoo, Subham Sekhar and Phung, Hao and Wang, Guanghan and Boshar, Sam and Dalla-torre, Hugo and de Almeida, Bernardo P and Rush, Alexander and Pierrot, Thomas and Kuleshov, Volodymyr},
           journal={TODO},
           year={2024}
