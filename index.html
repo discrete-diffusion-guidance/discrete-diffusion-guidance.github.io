@@ -212,7 +212,7 @@
       The seminal D3PM paper (<a href="https://arxiv.org/abs/2107.03006">Austin et al., 2021</a>) defined a noising process over discrete data via transition matrices \(Q_{t|s}\) whose \((i, j)^{\text{th}}\) entries correspond to the probability of transitioning from the \(i^{\text{th}}\) state at time \(s\) to the \(j^{\text{th}}\) state at time \(t\).
       This induces a Markov corruption process where we have \(q(\mathbf{z}_t | \mathbf{z}_s) = \mathrm{Cat}(\mathbf{z}_t; Q_{t|s}\mathbf{z}_s)\).
       <a href="https://arxiv.org/abs/2406.07524">Sahoo et al. (2024)</a> build off this framework to introduce specialized algorithms that are both simpler and more effective than the general D3PM framework.
-      They focus on a specific class of forward processes from D3PM that can be defined as interpolations between clean data and a noisy prior π, and we adopt their notation below:
+      They focus on a specific class of forward processes from D3PM that can be defined as interpolations between clean data and a noisy prior \(\boldsymbol{\pi}\), and we adopt their notation below:
       $$q(\mathbf{z}_t \mid \mathbf{x}_0) = \mathrm{Cat}(\mathbf{z}_t; \alpha_t\mathbf{x}_0 + (1 − \alpha_t)\boldsymbol{\pi}),$$
       where \(\alpha_t = \alpha(t)\) is a noise schedule monotonically decreasing in \(t\).
       Defining \(\alpha_{t|s} = \alpha_t / \alpha_s\), this class of processes admit the following posteriors
@@ -250,7 +250,7 @@
     <div class="content is-medium">
       To overcome the issues of applying gradient-based guidance mechanisms to discrete diffusion models, we propose two mechanisms for discrete guidance that re-weight the probabilities assigned by the denoising model according to a \(\gamma\)-scaled guidance term.
       <h3 class="subtitle" style="font-size:1.6rem;"><em>Discrete Classifier-Free Guidance</em></h3>
-        First, we can achieve classifier-free guidance through a simply derivation that relies on (repeated) applications of Bayes' rule to the tempered distribution \(p_\theta^\gamma(\mathbf{z}_s\mid \mathbf{z}_t, y)\).
+        First, we can achieve classifier-free guidance through a simple derivation that relies on (repeated) applications of Bayes' rule to the tempered distribution \(p_\theta^\gamma(\mathbf{z}_s\mid \mathbf{z}_t, y)\).
         We train a conditional and unconditonal diffusion model, both of which factorize independently across tokens in a sequence in order to sample each token independently from the following distribution:
         $$p_\theta^\gamma(\mathbf{z}_s\mid \mathbf{z}_t, y) \propto p_\theta(\mathbf{z}_s\mid \mathbf{z}_t, y)^\gamma\cdot p_\theta(\mathbf{z}_s \mid \mathbf{z}_t)^{(1-\gamma)}.$$
         That is, we sample each token from a weighted combination of the conditional and unconditional diffusion models.
@@ -272,7 +272,7 @@
       </h4>
     
       <h3 class="subtitle" style="font-size:1.6rem;"><em>Discrete Classifier-Based Guidance</em></h3>
-        Extending classifier-based guidance to diffusion models in a similar manner to above is difficult because the guiding classifier need not factorize the same as the diffusion denoising network, which would imply that the classifier needs to be evaluated on exponentially many sequence combinations.
+        Extending classifier-based guidance to diffusion models is difficult because the guiding classifier need not factorize the same as the diffusion denoising network, which would imply that the classifier needs to be evaluated on exponentially many sequence combinations.
         We resolve this using factorization assumptions on the decoding model and a Taylor expansion trick.
         <br><br>
         To formulate discrete classifier-based guidance, we make the assumption that conditioned on \(\mathbf{z}_t^{(1:L)}\), the tempered distribution from which we want to sample \(p^\gamma(\mathbf{z}_s^{(1:L)} \mid \mathbf{z}_t^{1:L}, y)\) factorizes independently across tokens.
@@ -294,13 +294,13 @@
   <div class="container is-max-desktop">
     <h2 class="title">Uniform Diffusion Language Models (UDLM)</h2>
     <div class="content is-medium">
-      While masked diffusion models demonstrate better language modeling compared to other discrete diffusion (<a href="https://arxiv.org/abs/2107.03006">Austin et al. 2021</a>; <a href="https://arxiv.org/abs/2310.16834">Lou et al. 2023</a>), we argue that they are less amenable to guidance, since once a token is unmasked at some time t it remains so for all \(s < t\).
+      While masked diffusion models demonstrate better language modeling compared to other discrete diffusion (<a href="https://arxiv.org/abs/2107.03006">Austin et al. 2021</a>; <a href="https://arxiv.org/abs/2310.16834">Lou et al. 2023</a>), we argue that they are less amenable to guidance, since once a token is unmasked at some time \(t\) it remains so for all \(s < t\).
       In contrast, with uniform noising, intermediate latents can be refined multiple times throughout the denoising process.
       We therefore revisit categorical uniform noise discrete diffusion, where \(\boldsymbol{\pi} = \boldsymbol{u} = 1/N\), where \(N\) is the size of the vocabulary.
-      Our aim is that by analyzing this class of diffusion models more carefully, we can reduce the gap to absorbing-state and yield performant models that are more easily steered by guidance tools we develop above.
+      Our aim is that by analyzing this class of diffusion models more carefully, we can reduce the gap to absorbing-state and yield performant models that are more easily steered by the guidance tools we developed above.
       <br><br>
       <b>Uniform Noise Forward Process</b>&nbsp&nbsp
-      We formulate uniform noise diffusion using the interpolating discrete diffusion framework <a href="https://arxiv.org/abs/2406.07524">Sahoo et al. (2024)</a>.
+      We formulate uniform noise diffusion using the interpolating discrete diffusion framework (<a href="https://arxiv.org/abs/2406.07524">Sahoo et al. (2024)</a>).
       When letting \(\boldsymbol{\pi} = \boldsymbol{u}\), the input \(\mathbf{x}\) transitions to a random state with some probability at each time step. 
       Crucially, after \(\mathbf{x}\) changes once, it can do so again.
       Formally, when \(\boldsymbol{\pi} = \boldsymbol{u}\), the posterior from above becomes
@@ -320,7 +320,6 @@
     </div>
   </div>
 </section>
-
 
 <!-- Experiments -->
 <section class="section" id="Experiments">
@@ -393,7 +392,7 @@
 
       <br><br>
       <table>
-        <caption style="font-size:1.1rem;font-weight:normal"><em>UDLM outperforms previously reported uniform noise discrete diffusion models on natural language text dataset. Values correspond to bits per character (BPC). Best values are <b>bolded</b>.</em></caption>
+        <caption style="font-size:1.1rem;font-weight:normal"><em>UDLM outperforms previously reported uniform noise discrete diffusion models on natural language text datasets. Best values are <b>bolded</b>.</em></caption>
         <tr>
           <th>Dataset</th>
           <th>D3PM Uniform</th>
@@ -543,7 +542,7 @@
         <em>Diffusion models extend the steer-ability Pareto frontier compared to AR.
         (Left) Comparing D-CBG and FUDGE for maximizing the drug-likeness (QED) property in the QM9 dataset. 
         Using our D-CBG outperforms FUDGE classifier guidance for AR.
-        We display \(\gamma\) values for which 50 or more of the generated sequences are novel.
+        <!-- We display \(\gamma\) values for which 50 or more of the generated sequences are novel. -->
         Only UDLM can accommodate larger \(\gamma\) values that enable better molecule property maximization.
         (Right) Comparing D-CFG for diffusion and AR models for maximizing ring-count in the QM9 dataset.
         Diffusion models better trade-off novel generation and property maximization.</em>
@@ -555,9 +554,9 @@
       We then conditionally generate images (with and without classifier-free guidance).
       In the tables below on the left, we see that both MDLM and UDLM outperform finite-time counterparts (in the form of D3PM) with improved image quality metrics of Frechet inception distance (FID) and Inception Score (IS).
       This is especially true when we add guidance using D-CFG.
-      Additionally, on the right table, we explore using faster inference settings (smaller \(T\) ) where diffusion models predict multiple pixels in parallel.
+      Additionally, on the right table, we explore faster inference settings (smaller \(T\) ) where diffusion models predict multiple pixels in parallel.
       MDLM's performance deteriorates with smaller \(T\), whereas UDLM is robust to this setting.
-      This validates a key motivation behind \method: in settings where MDLM 'locks in' certain predictions that it cannot change, UDLM is more resilient given that all tokens can change throughout the decoding process.
+      This validates a key motivation behind UDLM: in settings where MDLM 'locks in' certain predictions that it cannot change, UDLM is more resilient given that all tokens can change throughout the decoding process.
       <br><br>
       <table style="float: left;width: 460px;margin-right: 45px">
         <caption style="font-size:1.1rem;font-weight:normal"><em>Guidance improves quality on discretized CIFAR10. FID and IS for finite- (D3PM) and continuous-time (MDLM / UDLM) discrete diffusion models. Guidance using D-CFG (\(\gamma=4\)).
